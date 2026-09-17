@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Distributed Task Scheduler</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <p class="eyebrow">Operations Console</p>
+        <h1>Distributed Task Scheduler</h1>
+        <p class="subtitle">Priority-based job queue with concurrent workers</p>
+      </div>
+      <div class="header-actions">
+        <a class="link" href="/api/docs/" target="_blank" rel="noopener">API Docs</a>
+        <span id="refresh-indicator" class="pill">Live · 5s</span>
+      </div>
+    </header>
+
+    <section class="stats" id="stats-grid" aria-label="System statistics">
+      <div class="stat"><span class="stat-label">Total</span><strong id="stat-total">—</strong></div>
+      <div class="stat"><span class="stat-label">Pending</span><strong id="stat-pending">—</strong></div>
+      <div class="stat"><span class="stat-label">Running</span><strong id="stat-running">—</strong></div>
+      <div class="stat"><span class="stat-label">Completed</span><strong id="stat-completed">—</strong></div>
+      <div class="stat"><span class="stat-label">Failed</span><strong id="stat-failed">—</strong></div>
+      <div class="stat"><span class="stat-label">Workers</span><strong id="stat-workers">—</strong></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Create Task</h2>
+      </div>
+      <form id="create-form" class="create-form">
+        <label>
+          Name
+          <input name="task_name" required placeholder="send_email" />
+        </label>
+        <label>
+          Priority
+          <select name="priority">
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM" selected>MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+            <option value="CRITICAL">CRITICAL</option>
+          </select>
+        </label>
+        <label>
+          Type
+          <select name="type" id="payload-type">
+            <option value="CALCULATE">CALCULATE</option>
+            <option value="DELAY">DELAY</option>
+            <option value="DATA_PROCESSING">DATA_PROCESSING</option>
+            <option value="SEND_NOTIFICATION">SEND_NOTIFICATION</option>
+            <option value="FAIL">FAIL (demo)</option>
+          </select>
+        </label>
+        <label>
+          Max Retries
+          <input name="max_retries" type="number" min="0" value="3" />
+        </label>
+        <label class="wide">
+          Description
+          <input name="description" placeholder="Optional description" />
+        </label>
+        <button type="submit" class="btn primary">Enqueue</button>
+      </form>
+      <p id="form-message" class="form-message" hidden></p>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Tasks</h2>
+        <button type="button" class="btn ghost" id="manual-refresh">Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Task Name</th>
+              <th>Priority</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Scheduled At</th>
+              <th>Worker</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tasks-body">
+            <tr><td colspan="8" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Workers</h2>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Status</th>
+              <th>Completed</th>
+              <th>Failed</th>
+              <th>Last Heartbeat</th>
+            </tr>
+          </thead>
+          <tbody id="workers-body">
+            <tr><td colspan="6" class="muted">Loading…</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+</body>
+</html>
